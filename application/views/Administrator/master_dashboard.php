@@ -220,8 +220,7 @@
             <div class="main-content-inner">
 
                 <div class="breadcrumbs ace-save-state" id="breadcrumbs">
-                    <div id="google_translate_element"
-                        style="width:50%; height:30px; text-align:right; margin-left:570px;"></div>
+                    <div id="google_translate_element" style="float:right"></div>
                 </div>
 
                 <div class="breadcrumbs ace-save-state" id="breadcrumbs">

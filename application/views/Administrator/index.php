@@ -105,7 +105,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
                     $CheckSuperAdmin = $this->db->where('UserType', 'm')->where('User_SlNo', $userID)->get('tbl_user')->row();
                     if (isset($CheckSuperAdmin)) :
                     ?>
-                        <li class="light-blue dropdown-modal">
+                        <!-- <li class="light-blue dropdown-modal">
                             <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                                 <big>Branch Acess</big>
                                 <i class="ace-icon fa fa-caret-down"></i>
@@ -125,7 +125,7 @@ $companyInfo = $this->db->query("select * from tbl_company c order by c.Company_
                                     </li>
                                 <?php } ?>
                             </ul>
-                        </li>
+                        </li> -->
                     <?php endif; ?>
 
                     <li class="clock_li">

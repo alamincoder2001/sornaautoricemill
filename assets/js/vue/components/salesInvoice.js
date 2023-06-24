@@ -126,7 +126,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                 <div class="row">
                     <div class="col-xs-12">
                         <strong>কথায়: </strong> {{ banglaText }}<br><br>
-                        <strong>বর্ননা: </strong>
+                        <strong>বর্ণনা: </strong>
                         <p style="white-space: pre-line">{{ sales.SaleMaster_Description }}</p>
                     </div>
                 </div>

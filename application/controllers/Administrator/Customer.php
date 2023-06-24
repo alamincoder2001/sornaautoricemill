@@ -77,11 +77,15 @@ class Customer extends CI_Controller
         if(isset($data->customerId) && $data->customerId != null){
             $clauses .= " and c.Customer_SlNo = '$data->customerId'";
         }
+        $dateTo = null;
+        if(isset($data->dateTo) && $data->dateTo != null){
+            $dateTo .= $data->dateTo;
+        }
         if(isset($data->districtId) && $data->districtId != null){
             $clauses .= " and c.area_ID = '$data->districtId'";
         }
-
-        $dueResult = $this->mt->customerDue($clauses);
+        
+        $dueResult = $this->mt->customerDue($clauses, $dateTo);
 
         echo json_encode($dueResult);
     }

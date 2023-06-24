@@ -11,24 +11,24 @@ const salesInvoice = Vue.component("sales-invoice", {
                 <div class="row">
                     <div class="col-xs-12 text-center">
                         <div _h098asdh>
-                            Sales Invoice
+                            বিক্রয় চালান
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-7">
-                        <strong>Customer Id:</strong> {{ sales.Customer_Code }}<br>
-                        <strong>Customer Name:</strong> {{ sales.Customer_Name }}<br>
-                        <strong>Customer Address:</strong> {{ sales.Customer_Address }}<br>
-                        <strong>Customer Mobile:</strong> {{ sales.Customer_Mobile }} <br>
-                        <strong>Truck No.:</strong> {{ sales.Truck_Name }}<br>
+                        <strong>কাস্টমার আইডি:</strong> {{ sales.Customer_Code }}<br>
+                        <strong>কাস্টমার নাম:</strong> {{ sales.Customer_Name }}<br>
+                        <strong>কাস্টমার ঠিকানা:</strong> {{ sales.Customer_Address }}<br>
+                        <strong>কাস্টমার মোবাইল:</strong> {{ convertToBanglaNumber(sales.Customer_Mobile) }} <br>
+                        <strong>ট্রাক নং.:</strong> {{ sales.Truck_Name }}<br>
                     </div>
                     <div class="col-xs-5 text-right">
-                        <strong>Sales by:</strong> {{ sales.AddBy }}<br>
-                        <strong>Invoice No.:</strong> {{ sales.SaleMaster_InvoiceNo }}<br>
-                        <strong>Serial No.:</strong> {{ sales.serial_no }}<br>
-                        <strong>Chalan No.:</strong> {{ sales.chalan_no }}<br>
-                        <strong>Sales Date:</strong> {{ sales.SaleMaster_SaleDate }} {{ sales.AddTime | formatDateTime('h:mm a') }}
+                        <strong>সেলস বাই:</strong> {{ sales.AddBy }}<br>
+                        <strong>ইনভয়েস নং.:</strong> {{ convertToBanglaNumber(sales.SaleMaster_InvoiceNo) }}<br>
+                        <strong>সিরিয়াল নং.:</strong> {{ sales.serial_no }}<br>
+                        <strong>চালান নং.:</strong> {{ sales.chalan_no }}<br>
+                        <strong>সেলস তারিখ:</strong> {{ convertEnglishToBanglaDate(sales.SaleMaster_SaleDate) }} {{ sales.AddTime | formatDateTime('h:mm a') }}
                     </div>
                 </div>
                 <div class="row">
@@ -41,90 +41,92 @@ const salesInvoice = Vue.component("sales-invoice", {
                         <table _a584de>
                             <thead>
                                 <tr>
-                                    <td>Sl.</td>
-                                    <td>Description</td>
-                                    <td>Qnty</td>
-                                    <td>Unit</td>
-                                    <td>Unit Price</td>
-                                    <td>Total</td>
+                                    <td>ক্রমিক</td>
+                                    <td>বিবরণ</td>
+                                    <td>পরিমান</td>
+                                    <td>একক</td>
+                                    <td>একক মূল্য</td>
+                                    <td align="right">মোট টাকা</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(product, sl) in cart">
-                                    <td>{{ sl + 1 }}</td>
+                                    <td>{{ convertToBanglaNumber(sl + 1) }}</td>
                                     <td>{{ product.Product_Name }}</td>
-                                    <td>{{ product.SaleDetails_TotalQuantity }}</td>
+                                    <td>{{ convertToBanglaNumber(product.SaleDetails_TotalQuantity) }}</td>
                                     <td>{{ product.Unit_Name }}</td>
-                                    <td>{{ product.SaleDetails_Rate }}</td>
-                                    <td align="right">{{ product.SaleDetails_TotalAmount }}</td>
+                                    <td>{{ convertToBanglaNumber(product.SaleDetails_Rate) }}</td>
+                                    <td align="right">{{ convertToBanglaNumber(product.SaleDetails_TotalAmount) }}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-6">
+                    <div class="col-xs-7">
                         <br>
-                        <table class="pull-left">
-                            <tr>
-                                <td><strong>Previous Due:</strong></td>
-                                
-                                <td style="text-align:right">{{ sales.SaleMaster_Previous_Due == null ? '0.00' : sales.SaleMaster_Previous_Due  }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Current Due:</strong></td>
-                                
-                                <td style="text-align:right">{{ sales.SaleMaster_DueAmount == null ? '0.00' : sales.SaleMaster_DueAmount  }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" style="border-bottom: 1px solid #ccc;"></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Total Due:</strong></td>
-                                
-                                <td style="text-align:right">{{ (parseFloat(sales.SaleMaster_Previous_Due) + parseFloat(sales.SaleMaster_DueAmount == null ? 0.00 : sales.SaleMaster_DueAmount)).toFixed(2) }}</td>
-                            </tr>
+                        <table _a584de class="pull-left" v-if="payments.length > 0">
+                            <thead>
+                                <tr>
+                                    <td>ক্রমিক</td>
+                                    <td>তারিখ</td>
+                                    <td>ধরন</td>
+                                    <td>টাকার পরিমান </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(payment, sl) in payments">
+                                    <td>{{ convertToBanglaNumber(sl + 1) }}</td>
+                                    <td>{{ convertEnglishToBanglaDate(payment.CPayment_date) }}</td>
+                                    <td>{{payment.account_id == null ? payment.payment_by : payment.bank_name}}</td>
+                                    <td>{{ convertToBanglaNumber(payment.CPayment_amount) }}</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-xs-5">
                         <table _t92sadbc2>
                             <tr>
-                                <td><strong>Sub Total:</strong></td>
-                                <td style="text-align:right">{{ sales.SaleMaster_SubTotalAmount }}</td>
+                                <td><strong>মোট মালের মূল্য:</strong></td>
+                                <td style="text-align:right">{{ convertToBanglaNumber(sales.SaleMaster_SubTotalAmount) }}</td>
                             </tr>
                             <tr>
-                                <td><strong>VAT:</strong></td>
-                                <td style="text-align:right">{{ sales.SaleMaster_TaxAmount }}</td>
+                                <td><strong>অন্যান্য খরচ:</strong></td>
+                                <td style="text-align:right">{{ convertToBanglaNumber(sales.SaleMaster_Others) }}</td>
                             </tr>
                             <tr>
-                                <td><strong>Discount:</strong></td>
-                                <td style="text-align:right">{{ sales.SaleMaster_TotalDiscountAmount }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Transport Cost:</strong></td>
-                                <td style="text-align:right">{{ sales.SaleMaster_Freight }}</td>
+                                <td><strong>বাদ গাড়ী ভাড়া:</strong></td>
+                                <td style="text-align:right">{{ convertToBanglaNumber(sales.SaleMaster_Freight) }}</td>
                             </tr>
                             <tr><td colspan="2" style="border-bottom: 1px solid #ccc"></td></tr>
                             <tr>
-                                <td><strong>Total:</strong></td>
-                                <td style="text-align:right">{{ sales.SaleMaster_TotalSaleAmount }}</td>
+                                <td><strong>মোট চালানের মূল্য:</strong></td>
+                                <td style="text-align:right">{{ convertToBanglaNumber(sales.SaleMaster_TotalSaleAmount) }}</td>
                             </tr>
                             <tr>
-                                <td><strong>Paid:</strong></td>
-                                <td style="text-align:right">{{ sales.SaleMaster_PaidAmount }}</td>
+                                <td><strong>সাবেক জের:</strong></td>
+                                <td style="text-align:right">{{convertToBanglaNumber(parseFloat(customerDue).toFixed(2))}}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>মোট দাম:</strong></td>
+                                <td style="text-align:right">{{ convertToBanglaNumber(parseFloat(parseFloat(sales.SaleMaster_TotalSaleAmount) + +customerDue).toFixed(2))}}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>জমা বাদ:</strong></td>
+                                <td style="text-align:right">{{convertToBanglaNumber(parseFloat(payments.reduce((acc, pre) => {return acc + +parseFloat(pre.CPayment_amount)},0) + +parseFloat(sales.SaleMaster_PaidAmount)).toFixed(2))}}</td>
                             </tr>
                             <tr><td colspan="2" style="border-bottom: 1px solid #ccc"></td></tr>
                             <tr>
-                                <td><strong>Due:</strong></td>
-                                <td style="text-align:right">{{ sales.SaleMaster_DueAmount }}</td>
+                                <td><strong>বাকী:</strong></td>
+                                <td style="text-align:right">{{convertToBanglaNumber(parseFloat((parseFloat(sales.SaleMaster_TotalSaleAmount)+ +customerDue)- payments.reduce((acc, pre) => {return acc + +parseFloat(pre.CPayment_amount)},0) + +parseFloat(sales.SaleMaster_PaidAmount)).toFixed(2)) }}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <strong>In Word: </strong> {{ convertNumberToWords(sales.SaleMaster_TotalSaleAmount) }}<br><br>
-                        <strong>Note: </strong>
+                        <strong>কথায়: </strong> {{ banglaText }}<br><br>
+                        <strong>বর্ননা: </strong>
                         <p style="white-space: pre-line">{{ sales.SaleMaster_Description }}</p>
                     </div>
                 </div>
@@ -134,6 +136,10 @@ const salesInvoice = Vue.component("sales-invoice", {
   props: ["sales_id"],
   data() {
     return {
+      dateFrom: moment().format("YYYY-MM-DD"),
+      dateTo: moment().format("YYYY-MM-DD"),
+      banglaText: "",
+      englishText: "",
       sales: {
         SaleMaster_InvoiceNo: null,
         SalseCustomer_IDNo: null,
@@ -153,6 +159,8 @@ const salesInvoice = Vue.component("sales-invoice", {
         AddBy: null,
       },
       cart: [],
+      payments: [],
+      customerDue: 0.0,
       style: null,
       companyProfile: null,
       currentBranch: null,
@@ -163,17 +171,65 @@ const salesInvoice = Vue.component("sales-invoice", {
       return dt == "" || dt == null ? "" : moment(dt).format(format);
     },
   },
-  created() {
+  async created() {
     this.setStyle();
-    this.getSales();
+    await this.getSales();
     this.getCurrentBranch();
   },
   methods: {
-    getSales() {
-      axios.post("/get_sales", { salesId: this.sales_id }).then((res) => {
+    async getSales() {
+      await axios.post("/get_sales", { salesId: this.sales_id }).then((res) => {
         this.sales = res.data.sales[0];
         this.cart = res.data.saleDetails;
+        this.dateTo = this.sales.SaleMaster_SaleDate;
       });
+
+      await axios
+        .post("/get_sales", { customerId: this.sales.SalseCustomer_IDNo })
+        .then((res) => {
+          let salesdata = res.data;
+          let h = salesdata.sales.filter(
+            (sale) => sale.SaleMaster_SaleDate < this.sales.SaleMaster_SaleDate
+          );
+          if (h.length > 0) {
+            this.dateFrom = h[0].SaleMaster_SaleDate;
+          } else {
+            this.dateFrom = "";
+          }
+        });
+
+      await this.getPayments();
+      await this.getCustomerDue();
+      this.convertNumberToWords(
+        parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue
+      );
+      await this.translate();
+    },
+    async getPayments() {
+      let data = {
+        dateFrom: moment(this.dateFrom).add(1, "d").format("YYYY-MM-DD"),
+        dateTo: this.dateTo,
+        customerId: this.sales.SalseCustomer_IDNo,
+      };
+      if (this.dateFrom == "") {
+        data = { customerId: this.sales.SalseCustomer_IDNo };
+      }
+      await axios.post("/get_customer_payments", data).then((res) => {
+        this.payments = res.data.filter(
+          (payment) => payment.CPayment_date <= this.dateTo
+        );
+      });
+    },
+    async getCustomerDue() {
+      await axios
+        .post("/get_customer_due", {
+          customerId: this.sales.SalseCustomer_IDNo,
+          dateTo: this.sales.SaleMaster_SaleDate,
+        })
+        .then((res) => {
+          this.customerDue =
+            res.data[0].dueAmount > 0 ? res.data[0].dueAmount : 0;
+        });
     },
     getCurrentBranch() {
       axios.get("/get_current_branch").then((res) => {
@@ -217,6 +273,51 @@ const salesInvoice = Vue.component("sales-invoice", {
             `;
       document.head.appendChild(this.style);
     },
+    async translate() {
+      const response = await fetch(
+        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bn&dt=t&q=${encodeURIComponent(
+          this.englishText
+        )}`
+      );
+      const data = await response.json();
+      this.banglaText = data[0][0][0];
+    },
+    convertToBanglaNumber(number) {
+      const englishNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+      const banglaNumbers = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+
+      const numberString = String(number);
+      let banglaNumber = "";
+
+      for (let i = 0; i < numberString.length; i++) {
+        const digit = numberString[i];
+        const englishIndex = englishNumbers.indexOf(digit);
+
+        if (englishIndex !== -1) {
+          const banglaDigit = banglaNumbers[englishIndex];
+          banglaNumber += banglaDigit;
+        } else {
+          banglaNumber += digit;
+        }
+      }
+
+      return banglaNumber;
+    },
+
+    convertEnglishToBanglaDate(date) {
+      const d = new Date(date);
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        timeZone: "Asia/Dhaka",
+        numberingSystem: "beng",
+      };
+
+      const banglaDate = d.toLocaleDateString("bn-BD", options);
+      return banglaDate;
+    },
+
     convertNumberToWords(amountToWord) {
       var words = new Array();
       words[0] = "";
@@ -310,8 +411,10 @@ const salesInvoice = Vue.component("sales-invoice", {
         }
         words_string = words_string.split("  ").join(" ");
       }
+      this.englishText = words_string + " only";
       return words_string + " only";
     },
+
     async print() {
       let invoiceContent = document.querySelector("#invoiceContent").innerHTML;
       let printWindow = window.open(

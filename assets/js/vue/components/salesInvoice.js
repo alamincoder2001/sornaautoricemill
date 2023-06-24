@@ -78,7 +78,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                                 <tr v-for="(payment, sl) in payments">
                                     <td>{{ convertToBanglaNumber(sl + 1) }}</td>
                                     <td>{{ convertEnglishToBanglaDate(payment.CPayment_date) }}</td>
-                                    <td>{{payment.account_id == null ? payment.payment_by : payment.bank_name}}</td>
+                                    <td>{{payment.account_id == null ? 'নগদ' : payment.bank_name}}</td>
                                     <td>{{ convertToBanglaNumber(payment.CPayment_amount) }}</td>
                                 </tr>
                             </tbody>

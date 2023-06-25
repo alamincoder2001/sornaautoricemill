@@ -507,11 +507,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                                     <tr>
                                         <td>
                                             <div class="row">
-                                                <div class="col-xs-2"><img src="/uploads/company_profile_thum/${
-                                                  this.currentBranch
-                                                    .Company_Logo_org
-                                                }" alt="Logo" style="height:80px;" /></div>
-                                                <div class="col-xs-10" style="padding-top:20px;">
+                                                <div class="col-xs-10 no-padding" style="padding-top:20px;text-align:center;">
                                                     <strong style="font-size:18px;">${
                                                       this.currentBranch
                                                         .Company_Name
@@ -520,6 +516,9 @@ const salesInvoice = Vue.component("sales-invoice", {
                                                       this.currentBranch
                                                         .Repot_Heading
                                                     }</p>
+                                                </div>
+                                                <div class="col-xs-2 no-padding text-right">
+                                                  <img src="/uploads/company_profile_thum/${this.currentBranch.Company_Logo_org}" alt="Logo" style="height:90px;" />
                                                 </div>
                                             </div>
                                             <div class="row">

@@ -88,37 +88,35 @@ const salesInvoice = Vue.component("sales-invoice", {
                         <table _t92sadbc2>
                             <tr>
                                 <td><strong>মোট মালের মূল্য:</strong></td>
-                                <td style="text-align:right">{{ convertToBanglaNumber(sales.SaleMaster_SubTotalAmount) }}</td>
+                                <td style="text-align:right;color:black;">{{ convertToBanglaNumber(sales.SaleMaster_SubTotalAmount) }}</td>
                             </tr>
                             <tr>
                                 <td><strong>অন্যান্য খরচ:</strong></td>
-                                <td style="text-align:right">{{ convertToBanglaNumber(sales.SaleMaster_Others) }}</td>
+                                <td style="text-align:right;color:black;">{{ convertToBanglaNumber(sales.SaleMaster_Others) }}</td>
                             </tr>
                             <tr>
                                 <td><strong>বাদ গাড়ী ভাড়া:</strong></td>
-                                <td style="text-align:right">{{ convertToBanglaNumber(sales.SaleMaster_Freight) }}</td>
+                                <td style="text-align:right;color:black;">{{ convertToBanglaNumber(sales.SaleMaster_Freight) }}</td>
                             </tr>
-                            <tr><td colspan="2" style="border-bottom: 1px solid #ccc"></td></tr>
                             <tr>
                                 <td><strong>মোট চালানের মূল্য:</strong></td>
-                                <td style="text-align:right">{{ convertToBanglaNumber(sales.SaleMaster_TotalSaleAmount) }}</td>
+                                <td style="text-align:right;color:black;">{{ convertToBanglaNumber(sales.SaleMaster_TotalSaleAmount) }}</td>
                             </tr>
                             <tr>
                                 <td><strong>সাবেক জের:</strong></td>
-                                <td style="text-align:right">{{convertToBanglaNumber(parseFloat(customerDue).toFixed(2))}}</td>
+                                <td style="text-align:right;color:black;">{{convertToBanglaNumber(parseFloat(customerDue).toFixed(2))}}</td>
                             </tr>
                             <tr>
                                 <td><strong>মোট দাম:</strong></td>
-                                <td style="text-align:right">{{ convertToBanglaNumber(parseFloat(parseFloat(sales.SaleMaster_TotalSaleAmount) + +customerDue).toFixed(2))}}</td>
+                                <td style="text-align:right;color:black;">{{ convertToBanglaNumber(parseFloat(parseFloat(sales.SaleMaster_TotalSaleAmount) + +customerDue).toFixed(2))}}</td>
                             </tr>
                             <tr>
                                 <td><strong>জমা বাদ:</strong></td>
-                                <td style="text-align:right">{{convertToBanglaNumber(parseFloat(payments.reduce((acc, pre) => {return acc + +parseFloat(pre.CPayment_amount)},0) + +parseFloat(sales.SaleMaster_PaidAmount)).toFixed(2))}}</td>
+                                <td style="text-align:right;color:black;">{{convertToBanglaNumber(parseFloat(payments.reduce((acc, pre) => {return acc + +parseFloat(pre.CPayment_amount)},0) + +parseFloat(sales.SaleMaster_PaidAmount)).toFixed(2))}}</td>
                             </tr>
-                            <tr><td colspan="2" style="border-bottom: 1px solid #ccc"></td></tr>
                             <tr>
                                 <td><strong>বাকী:</strong></td>
-                                <td style="text-align:right">{{convertToBanglaNumber(parseFloat((parseFloat(sales.SaleMaster_TotalSaleAmount)+ +customerDue)- payments.reduce((acc, pre) => {return acc + +parseFloat(pre.CPayment_amount)},0) + +parseFloat(sales.SaleMaster_PaidAmount)).toFixed(2)) }}</td>
+                                <td style="text-align:right;color:black;">{{convertToBanglaNumber(parseFloat((parseFloat(sales.SaleMaster_TotalSaleAmount)+ +customerDue)- payments.reduce((acc, pre) => {return acc + +parseFloat(pre.CPayment_amount)},0) + +parseFloat(sales.SaleMaster_PaidAmount)).toFixed(2)) }}</td>
                             </tr>
                         </table>
                     </div>
@@ -250,7 +248,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                 }
                 div[_d9283dsc]{
                     padding-bottom:25px;
-                    border-bottom: 1px solid #ccc;
+                    border-bottom: 1px solid black;
                     margin-bottom: 15px;
                 }
                 table[_a584de]{
@@ -262,13 +260,22 @@ const salesInvoice = Vue.component("sales-invoice", {
                 }
                 table[_a584de] td{
                     padding: 3px;
-                    border: 1px solid #ccc;
+                    border: 1px solid black;
                 }
                 table[_t92sadbc2]{
                     width: 100%;
+                    margin-top:5px;
+                }
+                table[_t92sadbc2] tr{
+                    border: 1px solid black;
+                    border-top: 0;
+                }
+                table[_t92sadbc2] tr:first-child{
+                    border-top: 1px solid black;
                 }
                 table[_t92sadbc2] td{
                     padding: 2px;
+                    font-weight:bold;
                 }
             `;
       document.head.appendChild(this.style);
@@ -441,6 +448,17 @@ const salesInvoice = Vue.component("sales-invoice", {
                                 <p style="white-space:pre-line;">${this.currentBranch.Repot_Heading}</p>
                             </div>
                             ${invoiceContent}
+                            <div class="row">
+                              <div class="col-xs-4">
+                                  <span style="text-decoration:overline;">প্রস্তুতকারকের স্বাক্ষর</span>
+                              </div>
+                              <div class="col-xs-4 text-center">
+                                  <span style="text-decoration:overline;">ম্যানেজারের স্বাক্ষর</span>
+                              </div>
+                              <div class="col-xs-4 text-right">
+                                  <span style="text-decoration:overline;">মালিকের স্বাক্ষর</span>
+                              </div>
+                            </div>
                         </body>
                     </html>
                 `);
@@ -518,7 +536,10 @@ const salesInvoice = Vue.component("sales-invoice", {
                                                     }</p>
                                                 </div>
                                                 <div class="col-xs-2 no-padding text-right">
-                                                  <img src="/uploads/company_profile_thum/${this.currentBranch.Company_Logo_org}" alt="Logo" style="height:90px;" />
+                                                  <img src="/uploads/company_profile_thum/${
+                                                    this.currentBranch
+                                                      .Company_Logo_org
+                                                  }" alt="Logo" style="height:90px;" />
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -548,14 +569,25 @@ const salesInvoice = Vue.component("sales-invoice", {
                                     </tr>
                                 </tfoot>
                             </table>
-                            <div class="row" style="border-bottom:1px solid #ccc;margin-bottom:5px;padding-bottom:6px;">
-                                <div class="col-xs-6">
+                            <!-- <div class="row" style="border-bottom:1px solid black;margin-bottom:5px;padding-bottom:6px;">
+                                <div class="col-xs-4">
                                     <span style="text-decoration:overline;">Received by</span><br><br>
                                     ** THANK YOU FOR YOUR BUSINESS **
                                 </div>
-                                <div class="col-xs-6 text-right">
+                                <div class="col-xs-4 text-right">
                                     <span style="text-decoration:overline;">Authorized by</span>
                                 </div>
+                            </div> -->
+                            <div class="row">
+                              <div class="col-xs-4">
+                                  <span style="text-decoration:overline;">প্রস্তুতকারকের স্বাক্ষর</span>
+                              </div>
+                              <div class="col-xs-4 text-center">
+                                  <span style="text-decoration:overline;">ম্যানেজারের স্বাক্ষর</span>
+                              </div>
+                              <div class="col-xs-4 text-right">
+                                  <span style="text-decoration:overline;">মালিকের স্বাক্ষর</span>
+                              </div>
                             </div>
                             <div style="position:fixed;left:0;bottom:15px;width:100%;">
                                 <div class="row" style="font-size:12px;">

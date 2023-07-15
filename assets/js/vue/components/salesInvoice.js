@@ -448,7 +448,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                                 <p style="white-space:pre-line;">${this.currentBranch.Repot_Heading}</p>
                             </div>
                             ${invoiceContent}
-                            <div class="row">
+                            <div class="row" style="padding-top:35px;">
                               <div class="col-xs-4">
                                   <span style="text-decoration:overline;">প্রস্তুতকারকের স্বাক্ষর</span>
                               </div>
@@ -578,7 +578,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                                     <span style="text-decoration:overline;">Authorized by</span>
                                 </div>
                             </div> -->
-                            <div class="row">
+                            <div class="row" style="padding-top:35px;">
                               <div class="col-xs-4">
                                   <span style="text-decoration:overline;">প্রস্তুতকারকের স্বাক্ষর</span>
                               </div>

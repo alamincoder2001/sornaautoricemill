@@ -126,6 +126,7 @@ class Sales extends CI_Controller {
                 'SaleMaster_TotalSaleAmount'     => $data->sales->total,
                 'truck_id'                       => $data->sales->truck_id,
                 'chalan_no'                      => $data->sales->chalan_no,
+                'party_no'                       => $data->sales->party_no,
                 'serial_no'                      => $data->sales->serial_no,
                 'SaleMaster_TotalDiscountAmount' => $data->sales->discount,
                 'SaleMaster_TaxAmount'           => $data->sales->vat,
@@ -421,6 +422,7 @@ class Sales extends CI_Controller {
                 'SaleMaster_TaxAmount'           => $data->sales->vat,
                 'truck_id'                       => $data->sales->truck_id,
                 'chalan_no'                      => $data->sales->chalan_no,
+                'party_no'                       => $data->sales->party_no,
                 'serial_no'                      => $data->sales->serial_no,
                 'SaleMaster_Freight'             => $data->sales->transportCost,
                 'SaleMaster_Others'              => $data->sales->other_cost,
@@ -1386,6 +1388,32 @@ class Sales extends CI_Controller {
         // echo "<pre>";
         // print_r($data);die();
         $this->load->view('Administrator/sales/sales_record_list', $data); 
+    }
+
+    public function sales_invoice_text() {
+        $res = ['success'=>false, 'message'=>''];
+        try{
+            $data = json_decode($this->input->raw_input_stream);
+
+            $salesId = $data->salesId;
+           
+            $sales = array(
+                'invoiceText' => $data->invoiceText
+            );
+    
+            $this->db->where('SaleMaster_SlNo', $salesId);
+            $this->db->update('tbl_salesmaster', $sales);
+
+            $this->db->where('SaleMaster_SlNo', $salesId);
+            $newSale = $this->db->get('tbl_salesmaster')->row();
+            
+            $res = ['success'=>true, 'message'=>'Sales Invoice Update', 'invoiceText'=>$newSale->invoiceText];
+
+        } catch (Exception $ex){
+            $res = ['success'=>false, 'message'=>$ex->getMessage()];
+        }
+
+        echo json_encode($res);
     }
     
     function sales_stock()  {

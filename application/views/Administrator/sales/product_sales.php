@@ -186,16 +186,28 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" v-if="sales.salesType == 'retail'">
                                     <label class="col-xs-3 control-label no-padding-right"> Sale Rate </label>
                                     <div class="col-xs-9">
                                         <input type="number" id="salesRate" placeholder="Rate" step="0.01" class="form-control" v-model="selectedProduct.Product_SellingPrice" v-on:input="productTotal" />
                                     </div>
                                 </div>
+
+                                <div class="form-group" v-else>
+                                    <label class="col-xs-3 control-label no-padding-right"> Sale Rate </label>
+                                    <div class="col-xs-9">
+                                        <input type="number" id="salesRate" placeholder="Rate" step="0.01" class="form-control" v-model="selectedProduct.Product_WholesaleRate" v-on:input="productTotal" />
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <label class="col-xs-3 control-label no-padding-right"> Quantity </label>
-                                    <div class="col-xs-9">
-                                        <input type="number" step="0.01" id="quantity" placeholder="Qty" class="form-control" ref="quantity" v-model="selectedProduct.quantity" v-on:input="productTotal" autocomplete="off" required />
+                                    <div class="col-xs-4">
+                                        <input type="number" min="0" step="0.01" id="quantity" placeholder="Qty" class="form-control" ref="quantity" v-model="selectedProduct.quantity" v-on:input="productTotal" autocomplete="off" required />
+                                    </div>
+                                    <label class="no-padding col-xs-2">P.Unit</label>
+                                    <div class="col-xs-3 no-padding-left">
+                                        <input type="text" id="per_unit" placeholder="P.Uint" class="form-control" v-model="selectedProduct.per_unit" autocomplete="off" required />
                                     </div>
                                 </div>
 
@@ -510,6 +522,7 @@
                     Product_Name: '',
                     Unit_Name: '',
                     quantity: 0,
+                    per_unit: 0,
                     Product_Purchase_Rate: '',
                     Product_SellingPrice: 0.00,
                     vat: 0.00,
@@ -584,8 +597,13 @@
                 })
             },
             productTotal() {
-                this.selectedProduct.total = (parseFloat(this.selectedProduct.quantity) * parseFloat(this
-                    .selectedProduct.Product_SellingPrice)).toFixed(2);
+                if (this.sales.salesType == 'retail') {
+                    this.selectedProduct.total = (parseFloat(this.selectedProduct.quantity) * parseFloat(this
+                        .selectedProduct.Product_SellingPrice)).toFixed(2);
+                } else {
+                    this.selectedProduct.total = (parseFloat(this.selectedProduct.quantity) * parseFloat(this
+                        .selectedProduct.Product_WholesaleRate)).toFixed(2);
+                }
             },
             onSalesTypeChange() {
                 this.selectedCustomer = {
@@ -667,9 +685,10 @@
                     productCode: this.selectedProduct.Product_Code,
                     categoryName: this.selectedProduct.ProductCategory_Name,
                     name: this.selectedProduct.Product_Name,
-                    salesRate: this.selectedProduct.Product_SellingPrice,
+                    salesRate: this.sales.salesRate == 'retail' ? this.selectedProduct.Product_SellingPrice:this.selectedProduct.Product_WholesaleRate,
                     vat: this.selectedProduct.vat,
                     quantity: this.selectedProduct.quantity,
+                    per_unit: this.selectedProduct.per_unit,
                     total: this.selectedProduct.total,
                     purchaseRate: this.selectedProduct.Product_Purchase_Rate
                 }
@@ -736,7 +755,7 @@
                     this.discountPercent = (parseFloat(this.sales.discount) / parseFloat(this.sales.subTotal) * 100)
                         .toFixed(2);
                 }
-                this.sales.total = ((parseFloat(this.sales.subTotal) + parseFloat(this.sales.vat) + parseFloat(this.sales.other_cost)) - (parseFloat(this.sales.discount)  + parseFloat(this.sales.transportCost)) ).toFixed(2);
+                this.sales.total = ((parseFloat(this.sales.subTotal) + parseFloat(this.sales.vat) + parseFloat(this.sales.other_cost)) - (parseFloat(this.sales.discount) + parseFloat(this.sales.transportCost))).toFixed(2);
                 if (this.selectedCustomer.Customer_Type == 'G') {
                     this.sales.paid = this.sales.total;
                     this.sales.due = 0;
@@ -821,30 +840,30 @@
                 await axios.post('/get_sales', {
                     salesId: this.sales.salesId
                 }).then(res => {
-                    let r                        = res.data;
-                    let sales                    = r.sales[0];
-                        this.sales.salesBy       = sales.AddBy;
-                        this.sales.salesFrom     = sales.SaleMaster_branchid;
-                        this.sales.salesDate     = sales.SaleMaster_SaleDate;
-                        this.sales.salesType     = sales.SaleMaster_SaleType;
-                        this.sales.serial_no     = sales.serial_no;
-                        this.sales.chalan_no     = sales.chalan_no;
-                        this.sales.party_no     = sales.party_no;
-                        this.sales.customerId    = sales.SalseCustomer_IDNo;
-                        this.sales.employeeId    = sales.Employee_SlNo;
-                        this.sales.subTotal      = sales.SaleMaster_SubTotalAmount;
-                        this.sales.discount      = sales.SaleMaster_TotalDiscountAmount;
-                        this.sales.vat           = sales.SaleMaster_TaxAmount;
-                        this.sales.transportCost = sales.SaleMaster_Freight;
-                        this.sales.other_cost    = sales.SaleMaster_Others;
-                        this.sales.total         = sales.SaleMaster_TotalSaleAmount;
-                        this.sales.paid          = sales.SaleMaster_PaidAmount;
-                        this.sales.previousDue   = sales.SaleMaster_Previous_Due;
-                        this.sales.due           = sales.SaleMaster_DueAmount;
-                        this.sales.note          = sales.SaleMaster_Description;
+                    let r = res.data;
+                    let sales = r.sales[0];
+                    this.sales.salesBy = sales.AddBy;
+                    this.sales.salesFrom = sales.SaleMaster_branchid;
+                    this.sales.salesDate = sales.SaleMaster_SaleDate;
+                    this.sales.salesType = sales.SaleMaster_SaleType;
+                    this.sales.serial_no = sales.serial_no;
+                    this.sales.chalan_no = sales.chalan_no;
+                    this.sales.party_no = sales.party_no;
+                    this.sales.customerId = sales.SalseCustomer_IDNo;
+                    this.sales.employeeId = sales.Employee_SlNo;
+                    this.sales.subTotal = sales.SaleMaster_SubTotalAmount;
+                    this.sales.discount = sales.SaleMaster_TotalDiscountAmount;
+                    this.sales.vat = sales.SaleMaster_TaxAmount;
+                    this.sales.transportCost = sales.SaleMaster_Freight;
+                    this.sales.other_cost = sales.SaleMaster_Others;
+                    this.sales.total = sales.SaleMaster_TotalSaleAmount;
+                    this.sales.paid = sales.SaleMaster_PaidAmount;
+                    this.sales.previousDue = sales.SaleMaster_Previous_Due;
+                    this.sales.due = sales.SaleMaster_DueAmount;
+                    this.sales.note = sales.SaleMaster_Description;
 
-                    this.oldCustomerId       = sales.SalseCustomer_IDNo;
-                    this.oldPreviousDue      = sales.SaleMaster_Previous_Due;
+                    this.oldCustomerId = sales.SalseCustomer_IDNo;
+                    this.oldPreviousDue = sales.SaleMaster_Previous_Due;
                     this.sales_due_on_update = sales.SaleMaster_DueAmount;
 
                     this.vatPercent = parseFloat(this.sales.vat) * 100 / parseFloat(this.sales
@@ -858,25 +877,26 @@
                     }
 
                     this.selectedCustomer = {
-                        Customer_SlNo   : sales.SalseCustomer_IDNo,
-                        Customer_Code   : sales.Customer_Code,
-                        Customer_Name   : sales.Customer_Name,
-                        display_name    : sales.Customer_Type == 'G' ? 'General Customer': `${sales.Customer_Code} - ${sales.Customer_Name}`,
-                        Customer_Mobile : sales.Customer_Mobile,
+                        Customer_SlNo: sales.SalseCustomer_IDNo,
+                        Customer_Code: sales.Customer_Code,
+                        Customer_Name: sales.Customer_Name,
+                        display_name: sales.Customer_Type == 'G' ? 'General Customer' : `${sales.Customer_Code} - ${sales.Customer_Name}`,
+                        Customer_Mobile: sales.Customer_Mobile,
                         Customer_Address: sales.Customer_Address,
-                        Customer_Type   : sales.Customer_Type
+                        Customer_Type: sales.Customer_Type
                     }
 
                     r.saleDetails.forEach(product => {
                         let cartProduct = {
-                            productCode : product.Product_Code,
-                            productId   : product.Product_IDNo,
+                            productCode: product.Product_Code,
+                            productId: product.Product_IDNo,
                             categoryName: product.ProductCategory_Name,
-                            name        : product.Product_Name,
-                            salesRate   : product.SaleDetails_Rate,
-                            vat         : product.SaleDetails_Tax,
-                            quantity    : product.SaleDetails_TotalQuantity,
-                            total       : product.SaleDetails_TotalAmount,
+                            name: product.Product_Name,
+                            salesRate: product.SaleDetails_Rate,
+                            vat: product.SaleDetails_Tax,
+                            quantity: product.SaleDetails_TotalQuantity,
+                            per_unit: product.SaleDetails_per_unit,
+                            total: product.SaleDetails_TotalAmount,
                             purchaseRate: product.Purchase_Rate,
                         }
 

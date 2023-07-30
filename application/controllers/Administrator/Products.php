@@ -178,7 +178,8 @@ class Products extends CI_Controller {
                 concat(p.Product_Name, ' - ', p.Product_Code) as display_text,
                 pc.ProductCategory_Name,
                 br.brand_name,
-                u.Unit_Name
+                u.Unit_Name,
+                0 as per_unit
             from tbl_product p
             left join tbl_productcategory pc on pc.ProductCategory_SlNo = p.ProductCategory_ID
             left join tbl_brand br on br.brand_SiNo = p.brand

@@ -77,9 +77,16 @@
         <div class="row">
 
             <div class="form-group">
-                <label class="col-sm-1 control-label no-padding-right"> chalan no </label>
+                <label class="col-sm-1 control-label no-padding-right"> Chalan no </label>
                 <div class="col-sm-2">
                     <input type="text" id="invoiceNo" class="form-control" v-model="sales.chalan_no" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right"> Party no </label>
+                <div class="col-sm-2">
+                    <input type="text" id="invoiceNo" class="form-control" v-model="sales.party_no" />
                 </div>
             </div>
 
@@ -327,8 +334,7 @@
                                     <tr>
                                         <td>
                                             <div class="form-group">
-                                                <label class="col-xs-12 control-label no-padding-right">Discount
-                                                    Persent</label>
+                                                <label class="col-xs-12 control-label no-padding-right">Discount Persent</label>
 
                                                 <div class="col-xs-4">
                                                     <input type="number" id="discountPercent" class="form-control" v-model="discountPercent" v-on:input="calculateTotal" />
@@ -347,8 +353,7 @@
                                     <tr>
                                         <td>
                                             <div class="form-group">
-                                                <label class="col-xs-12 control-label no-padding-right">Transport
-                                                    Cost</label>
+                                                <label class="col-xs-12 control-label no-padding-right">Transport Cost</label>
                                                 <div class="col-xs-12">
                                                     <input type="number" class="form-control" v-model="sales.transportCost" v-on:input="calculateTotal" />
                                                 </div>
@@ -359,8 +364,7 @@
                                     <tr>
                                         <td>
                                             <div class="form-group">
-                                                <label class="col-xs-12 control-label no-padding-right">Other
-                                                    Cost</label>
+                                                <label class="col-xs-12 control-label no-padding-right">Other Cost</label>
                                                 <div class="col-xs-12">
                                                     <input type="number" class="form-control" v-model="sales.other_cost" v-on:input="calculateTotal" />
                                                 </div>
@@ -461,6 +465,7 @@
                     truck_id: '',
                     employeeId: null,
                     chalan_no: '',
+                    party_no: '',
                     serial_no: '',
                     subTotal: 0.00,
                     discount: 0.00,
@@ -635,6 +640,9 @@
                 })
             },
             async productOnChange() {
+                if (this.selectedProduct.Product_SlNo == '') {
+                    return
+                }
                 if ((this.selectedProduct.Product_SlNo != '' || this.selectedProduct.Product_SlNo != 0) && this
                     .sales.isService == 'false') {
                     this.productStock = await axios.post('/get_product_stock', {
@@ -728,8 +736,7 @@
                     this.discountPercent = (parseFloat(this.sales.discount) / parseFloat(this.sales.subTotal) * 100)
                         .toFixed(2);
                 }
-                this.sales.total = ((parseFloat(this.sales.subTotal) + parseFloat(this.sales.vat) + parseFloat(this
-                    .sales.transportCost) + parseFloat(this.sales.other_cost)) - parseFloat(this.sales.discount)).toFixed(2);
+                this.sales.total = ((parseFloat(this.sales.subTotal) + parseFloat(this.sales.vat) + parseFloat(this.sales.other_cost)) - (parseFloat(this.sales.discount)  + parseFloat(this.sales.transportCost)) ).toFixed(2);
                 if (this.selectedCustomer.Customer_Type == 'G') {
                     this.sales.paid = this.sales.total;
                     this.sales.due = 0;
@@ -822,6 +829,7 @@
                         this.sales.salesType     = sales.SaleMaster_SaleType;
                         this.sales.serial_no     = sales.serial_no;
                         this.sales.chalan_no     = sales.chalan_no;
+                        this.sales.party_no     = sales.party_no;
                         this.sales.customerId    = sales.SalseCustomer_IDNo;
                         this.sales.employeeId    = sales.Employee_SlNo;
                         this.sales.subTotal      = sales.SaleMaster_SubTotalAmount;

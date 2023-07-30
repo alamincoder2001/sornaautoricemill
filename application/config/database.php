@@ -11,8 +11,8 @@ $db['default'] = array(
   	'username' => 'root',
   	'password' => '',
   	'database' => 'dewbxcak_sornaautoricemill',
-	
-  	// 'username' => 'dewbxcak_admin3',
+
+	// 'username' => 'dewbxcak_admin3',
   	// 'password' => ')&@)nVVDO$]_',
   	// 'database' => 'dewbxcak_sornaautoricemill',
 	

@@ -62,7 +62,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                                       <td>{{ convertToBanglaNumber(sl + 1) }}</td>
                                       <td>{{ product.Product_Name }}</td>
                                       <td>{{ convertToBanglaNumber(product.SaleDetails_TotalQuantity) }} {{product.Unit_Name}}</td>
-                                      <td>{{ product.SaleDetails_per_unit }}</td>
+                                      <td>{{ convertToBanglaNumber(product.SaleDetails_per_unit) }}</td>
                                       <td>{{ convertToBanglaNumber(product.SaleDetails_Rate) }}</td>
                                       <td align="right">{{ convertToBanglaNumber(product.SaleDetails_TotalAmount) }}</td>
                                   </tr>
@@ -243,8 +243,7 @@ const salesInvoice = Vue.component("sales-invoice", {
           dateTo: this.sales.SaleMaster_SaleDate,
         })
         .then((res) => {
-          this.customerDue =
-            res.data[0].dueAmount > 0 ? res.data[0].dueAmount : 0;
+          this.customerDue = res.data[0].dueAmount;
         });
 
         if (this.todayPayments.length > 0) {

@@ -262,6 +262,7 @@
                             <th style="width:20%;color:#000;">Product Name</th>
                             <th style="width:15%;color:#000;">Category</th>
                             <th style="width:7%;color:#000;">Qty</th>
+                            <th style="width:7%;color:#000;">P.Unit</th>
                             <th style="width:8%;color:#000;">Rate</th>
                             <th style="width:15%;color:#000;">Total Amount</th>
                             <th style="width:10%;color:#000;">Action</th>
@@ -274,22 +275,23 @@
                             <td>{{ product.name }}</td>
                             <td>{{ product.categoryName }}</td>
                             <td>{{ product.quantity }}</td>
+                            <td>{{ product.per_unit }}</td>
                             <td>{{ product.salesRate }}</td>
                             <td>{{ product.total }}</td>
                             <td><a href="" v-on:click.prevent="removeFromCart(sl)"><i class="fa fa-trash"></i></a></td>
                         </tr>
 
                         <tr>
-                            <td colspan="8"></td>
+                            <td colspan="9"></td>
                         </tr>
 
                         <tr style="font-weight: bold;">
-                            <td colspan="5">Note</td>
+                            <td colspan="6">Note</td>
                             <td colspan="3">Total</td>
                         </tr>
 
                         <tr>
-                            <td colspan="5"><textarea style="width: 100%;font-size:13px;" placeholder="Note" v-model="sales.note"></textarea></td>
+                            <td colspan="6"><textarea style="width: 100%;font-size:13px;" placeholder="Note" v-model="sales.note"></textarea></td>
                             <td colspan="3" style="padding-top: 15px;font-size:18px;">{{ sales.total }}</td>
                         </tr>
                     </tbody>

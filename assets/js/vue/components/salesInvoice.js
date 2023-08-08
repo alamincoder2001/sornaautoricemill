@@ -169,6 +169,7 @@ const salesInvoice = Vue.component("sales-invoice", {
       todayPayments: [],
       customerDue: 0.0,
       totaldueAmount: 0.0,
+      lastPaymentDate: '',
       style: null,
       companyProfile: null,
       currentBranch: null,
@@ -211,7 +212,6 @@ const salesInvoice = Vue.component("sales-invoice", {
       this.convertNumberToWords(
         parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue
       );
-      // await this.translate();
     },
     async getPayments() {
       let data = {
@@ -229,28 +229,34 @@ const salesInvoice = Vue.component("sales-invoice", {
         this.payments = res.data.filter(
           (payment) => payment.CPayment_date <= this.dateTo
         );
-        let dateMy =
-          this.dateFrom == "" ? this.sales.SaleMaster_SaleDate : data.dateTo;
-        this.todayPayments = res.data.filter(
-          (payment) => payment.CPayment_date == dateMy
-        );
+        if (this.payments.length > 0) {
+          this.lastPaymentDate = this.payments[this.payments.length - 1].CPayment_date
+        }else{
+          this.lastPaymentDate = this.sales.SaleMaster_SaleDate
+        }
+        // let dateMy = this.dateFrom == "" ? this.sales.SaleMaster_SaleDate : data.dateTo;
+        // this.todayPayments = res.data.filter(
+        //   (payment) => payment.CPayment_date == dateMy
+        // );
+
       });
     },
     async getCustomerDue() {
       await axios
         .post("/get_customer_due", {
           customerId: this.sales.SalseCustomer_IDNo,
-          dateTo: this.sales.SaleMaster_SaleDate,
+          dateTo: this.lastPaymentDate,
         })
         .then((res) => {
           this.customerDue = res.data[0].dueAmount;
         });
 
-        if (this.todayPayments.length > 0) {
-            this.totaldueAmount = parseFloat((parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue) - (this.payments.reduce((acc, pre) => {return acc + +parseFloat(pre.CPayment_amount)},0) + +parseFloat(this.sales.SaleMaster_PaidAmount)) ).toFixed(2)
-        }else{
-            this.totaldueAmount = parseFloat((parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue) - parseFloat(this.sales.SaleMaster_PaidAmount)).toFixed(2)
-        }
+        this.totaldueAmount = parseFloat((parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue) - (this.payments.reduce((acc, pre) => {return acc + +parseFloat(pre.CPayment_amount)},0) + +parseFloat(this.sales.SaleMaster_PaidAmount)) ).toFixed(2)
+        // if (this.todayPayments.length > 0) {
+        //     this.totaldueAmount = parseFloat((parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue) - (this.payments.reduce((acc, pre) => {return acc + +parseFloat(pre.CPayment_amount)},0) + +parseFloat(this.sales.SaleMaster_PaidAmount)) ).toFixed(2)
+        // }else{
+        //     this.totaldueAmount = parseFloat((parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue) - parseFloat(this.sales.SaleMaster_PaidAmount)).toFixed(2)
+        // }
     },
     invoiceTextChange() {
       let data = {

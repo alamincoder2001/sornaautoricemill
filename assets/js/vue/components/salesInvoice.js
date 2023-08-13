@@ -36,7 +36,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                           <strong>সিরিয়াল নং.:</strong> {{ sales.serial_no }}<br>
                           <strong>চালান নং.:</strong> {{ sales.chalan_no }}<br>
                           <strong>পার্টি নং.:</strong> {{ sales.party_no }}<br>
-                          <strong>সেলস তারিখ:</strong> {{ convertEnglishToBanglaDate(sales.SaleMaster_SaleDate) }} {{ sales.AddTime | formatDateTime('h:mm a') }}
+                          <strong>তারিখ:</strong> {{ convertEnglishToBanglaDate(sales.SaleMaster_SaleDate) }} {{ sales.AddTime | formatDateTime('h:mm a') }}
                       </div>
                   </div>
                   <div class="row">

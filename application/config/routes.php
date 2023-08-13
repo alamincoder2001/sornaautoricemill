@@ -214,7 +214,6 @@ $route['get_sales_party_no_count/(:any)'] = 'Administrator/Sales/PartyNoCount/$1
 $route['sales/(:any)'] = 'Administrator/Sales/index/$1';
 $route['sales/(:any)/(:any)'] = 'Administrator/Sales/salesEdit/$1/$2';
 $route['salesinvoice'] = 'Administrator/Sales/sales_invoice';
-$route['salesinvoicetext'] = 'Administrator/Sales/sales_invoice_text';
 
 $route['cheque/entry_from'] = 'Administrator/Check/view_check_entry_from';
 $route['sale_cheque_store'] = 'Administrator/Check/sale_cheque_store';

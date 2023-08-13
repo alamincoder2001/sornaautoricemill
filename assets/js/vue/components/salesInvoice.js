@@ -1,13 +1,6 @@
 const salesInvoice = Vue.component("sales-invoice", {
   template: `
           <div>
-              <div class="row" style="margin-bottom:10px">
-                  <label class="control-label col-xs-3">Invoice Bangla Text</label>
-                  <div class="col-xs-1">:</div>
-                  <div class="col-xs-8">
-                      <input type="text" v-model="sales.invoiceText" class="form-control" @input="invoiceTextChange">
-                  </div>
-              </div>
               <div class="row">
                   <div class="col-xs-12">
                       <a href="" v-on:click.prevent="print"><i class="fa fa-print"></i> Print</a>
@@ -131,7 +124,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                   </div>
                   <div class="row">
                       <div class="col-xs-12">
-                          <strong>কথায়: </strong> {{ sales.invoiceText }} <br><br>
+                          <strong>কথায়: </strong> {{ banglaText }} <br><br>
                           <!--<strong>বর্ণনা: </strong>
                           <p style="white-space: pre-line">{{ sales.SaleMaster_Description }}</p>-->
                       </div>
@@ -145,6 +138,7 @@ const salesInvoice = Vue.component("sales-invoice", {
       dateFrom: moment().format("YYYY-MM-DD"),
       dateTo: moment().format("YYYY-MM-DD"),
       englishText: "",
+      banglaText: "",
       sales: {
         SaleMaster_InvoiceNo: null,
         SalseCustomer_IDNo: null,
@@ -168,7 +162,7 @@ const salesInvoice = Vue.component("sales-invoice", {
       todayPayments: [],
       customerDue: 0.0,
       totaldueAmount: 0.0,
-      lastPaymentDate: '',
+      lastPaymentDate: "",
       style: null,
       companyProfile: null,
       currentBranch: null,
@@ -226,11 +220,11 @@ const salesInvoice = Vue.component("sales-invoice", {
           (payment) => payment.CPayment_date <= this.dateTo
         );
         if (this.payments.length > 0) {
-          this.lastPaymentDate = this.payments[this.payments.length - 1].CPayment_date
-        }else{
-          this.lastPaymentDate = this.sales.SaleMaster_SaleDate
+          this.lastPaymentDate =
+            this.payments[this.payments.length - 1].CPayment_date;
+        } else {
+          this.lastPaymentDate = this.sales.SaleMaster_SaleDate;
         }
-
       });
     },
     async getCustomerDue() {
@@ -243,10 +237,16 @@ const salesInvoice = Vue.component("sales-invoice", {
           this.customerDue = res.data[0].dueAmount;
         });
 
-        this.totaldueAmount = parseFloat((parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue) - (this.payments.reduce((acc, pre) => {return acc + +parseFloat(pre.CPayment_amount)},0) + +parseFloat(this.sales.SaleMaster_PaidAmount)) ).toFixed(2)
+      this.totaldueAmount = parseFloat(
+        parseFloat(this.sales.SaleMaster_TotalSaleAmount) +
+          +this.customerDue -
+          (this.payments.reduce((acc, pre) => {
+            return acc + +parseFloat(pre.CPayment_amount);
+          }, 0) +
+            +parseFloat(this.sales.SaleMaster_PaidAmount))
+      ).toFixed(2);
 
-        // this.englishText = this.convertNumberToWords(parseFloat(parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue).toFixed(2));
-        // await this.translate();
+      await this.convertBan(parseFloat(parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue))
     },
     invoiceTextChange() {
       let data = {
@@ -256,6 +256,30 @@ const salesInvoice = Vue.component("sales-invoice", {
       axios.post("/salesinvoicetext", data).then((res) => {
         this.sales.invoiceText = res.data.invoiceText;
       });
+    },
+    async convertBan(num) {
+      var a1 = ['','এক ','দুই ','তিন ','চার ', 'পাঁচ ','ছয় ','সাত ','আট ','নয় ','দশ ',
+      'এগার ','বার ','তের ','চৌদ্দ ','পনের  ','ষোল ','সতের ','আঠার ','ঊনিশ ', 'বিশ ', 
+      'একুশ ','বাইশ ','তেইশ ','চব্বিশ ','পঁচিশ ','ছাব্বিশ ','সাতাশ ','আটাশ ','ঊনত্রিশ ', 'ত্রিশ ',
+      'একত্রিশ ','বত্রিশ ','তেত্রিশ ','চৌত্রিশ ','পঁয়ত্রিশ ','ছত্রিশ ','সাঁইত্রিশ ','আটত্রিশ ','ঊনচল্লিশ ', 'চল্লিশ ',
+      'একচল্লিশ ','বিয়াল্লিশ ','তেতাল্লিশ ','চুয়াল্লিশ ','পঁয়তাল্লিশ ','ছেচল্লিশ ','সাতচল্লিশ ','আটচল্লিশ ','ঊনপঞ্চাশ ', 'পঞ্চাশ ',
+      'একান্ন ','বায়ান্ন ','তিপ্পান্ন ','চুয়ান্ন ','পঞ্চান্ন ','ছাপ্পান্ন ','সাতান্ন ','আটান্ন ','ঊনষাট ', 'ষাট ',
+      'একষট্টি ','বাষট্টি ','তেষট্টি ','চৌষট্টি ','পঁয়ষট্টি ','ছেষট্টি ','সাতষট্টি ','আটষট্টি ','ঊনসত্তর ', 'সত্তর ',
+      'একাত্তর ','বাহাত্তর ','তিয়াত্তর ','চুয়াত্তর ','পঁচাত্তর ','ছিয়াত্তর ','সাতাত্তর ','আটাত্তর ','ঊনআশি ', 'আশি ',
+      'একাশি ','বিরাশি ','তিরাশি ','চুরাশি ','পঁচাশি ','ছিয়াশি ','সাতাশি ','আটাশি ','ঊননব্বই ', 'নব্বই ',
+      'একানব্বই ','বিরানব্বই ','তিরানব্বই ','চুরানব্বই ','পঁচানব্বই ','ছিয়ানব্বই ','সাতানব্বই ','আটানব্বই ','নিরানব্বই ',];
+      var b1 = ['', '', 'বিশ','ত্রিশ','চল্লিশ','পঞ্চাশ', 'ষাট','সত্তর','আশি','নব্বই'];
+
+      if ((num = num.toString()).length > 9) return 'overflow';
+      n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+      if (!n) return; var str = '';
+      str += (n[1] != 0) ? (a1[Number(n[1])] || b1[n[1][0]] + ' ' + a[n[1][1]]) + 'কোটি ' : '';
+      str += (n[2] != 0) ? (a1[Number(n[2])] || b1[n[2][0]] + ' ' + a[n[2][1]]) + 'লাখ ' : '';
+      str += (n[3] != 0) ? (a1[Number(n[3])] || b1[n[3][0]] + ' ' + a[n[3][1]]) + 'হাজার ' : '';
+      str += (n[4] != 0) ? (a1[Number(n[4])] || b1[n[4][0]] + ' ' + a[n[4][1]]) + 'শত ' : '';
+      str += (n[5] != 0) ? ((str != '') ? ' ' : '') + (a1[Number(n[5])] || b1[n[5][0]] + ' ' + a1[n[5][1]]) + 'মাত্র ।' : 'মাত্র ।';
+      
+      this.banglaText = str;
     },
     getCurrentBranch() {
       axios.get("/get_current_branch").then((res) => {
@@ -308,16 +332,6 @@ const salesInvoice = Vue.component("sales-invoice", {
               `;
       document.head.appendChild(this.style);
     },
-    // async translate() {
-    //   const response = await fetch(
-    //     `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bn&dt=t&q=${encodeURIComponent(
-    //       this.englishText
-    //     )}`
-    //   );
-    //   const data = await response.json();
-
-    //   this.sales.invoiceText = data[0][0][0];
-    // },
     convertToBanglaNumber(number) {
       const englishNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
       const banglaNumbers = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
@@ -352,101 +366,6 @@ const salesInvoice = Vue.component("sales-invoice", {
 
       const banglaDate = d.toLocaleDateString("bn-BD", options);
       return banglaDate;
-    },
-    convertNumberToWords(amountToWord) {
-      var words = new Array();
-      words[0] = "";
-      words[1] = "এক";
-      words[2] = "দুই";
-      words[3] = "তিন";
-      words[4] = "চার";
-      words[5] = "পাঁচ";
-      words[6] = "ছয়";
-      words[7] = "সাত";
-      words[8] = "আঠ";
-      words[9] = "নয়";
-      words[10] = "দশ";
-      words[11] = "এগার";
-      words[12] = "বার";
-      words[13] = "তের";
-      words[14] = "চৌদ্দ";
-      words[15] = "পনের";
-      words[16] = "ষোল";
-      words[17] = "সতের";
-      words[18] = "আঠার";
-      words[19] = "উনিশ";
-      words[20] = "বিশ";
-      words[30] = "ত্রিশ";
-      words[40] = "চল্লিশ";
-      words[50] = "পঞ্চাশ";
-      words[60] = "ষাইট";
-      words[70] = "সত্তর";
-      words[80] = "আশি";
-      words[90] = "নব্বই";
-      amount = amountToWord == null ? "0.00" : amountToWord.toString();
-      var atemp = amount.split(".");
-      var number = atemp[0].split(",").join("");
-      var n_length = number.length;
-      var words_string = "";
-      if (n_length <= 9) {
-        var n_array = new Array(0, 0, 0, 0, 0, 0, 0, 0, 0);
-        var received_n_array = new Array();
-        for (var i = 0; i < n_length; i++) {
-          received_n_array[i] = number.substr(i, 1);
-        }
-        for (var i = 9 - n_length, j = 0; i < 9; i++, j++) {
-          n_array[i] = received_n_array[j];
-        }
-        for (var i = 0, j = 1; i < 9; i++, j++) {
-          if (i == 0 || i == 2 || i == 4 || i == 7) {
-            if (n_array[i] == 1) {
-              n_array[j] = 10 + parseInt(n_array[j]);
-              n_array[i] = 0;
-            }
-          }
-        }
-        value = "";
-        for (var i = 0; i < 9; i++) {
-          if (i == 0 || i == 2 || i == 4 || i == 7) {
-            value = n_array[i] * 10;
-          } else {
-            value = n_array[i];
-          }
-          if (value != 0) {
-            words_string += words[value] + " ";
-          }
-          if (
-            (i == 1 && value != 0) ||
-            (i == 0 && value != 0 && n_array[i + 1] == 0)
-          ) {
-            words_string += " কোটি ";
-          }
-          if (
-            (i == 3 && value != 0) ||
-            (i == 2 && value != 0 && n_array[i + 1] == 0)
-          ) {
-            words_string += " লক্ষ ";
-          }
-          if (
-            (i == 5 && value != 0) ||
-            (i == 4 && value != 0 && n_array[i + 1] == 0)
-          ) {
-            words_string += " হাজার ";
-          }
-          if (
-            i == 6 &&
-            value != 0 &&
-            n_array[i + 1] != 0 &&
-            n_array[i + 2] != 0
-          ) {
-            words_string += " শত এবং ";
-          } else if (i == 6 && value != 0) {
-            words_string += " শত ";
-          }
-        }
-        words_string = words_string.split("  ").join(" ");
-      }
-      return words_string + " টাকা মাত্র ";
     },
 
     async print() {

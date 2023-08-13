@@ -1408,32 +1408,6 @@ class Sales extends CI_Controller
         $this->load->view('Administrator/sales/sales_record_list', $data);
     }
 
-    public function sales_invoice_text()
-    {
-        $res = ['success' => false, 'message' => ''];
-        try {
-            $data = json_decode($this->input->raw_input_stream);
-
-            $salesId = $data->salesId;
-
-            $sales = array(
-                'invoiceText' => $data->invoiceText
-            );
-
-            $this->db->where('SaleMaster_SlNo', $salesId);
-            $this->db->update('tbl_salesmaster', $sales);
-
-            $this->db->where('SaleMaster_SlNo', $salesId);
-            $newSale = $this->db->get('tbl_salesmaster')->row();
-
-            $res = ['success' => true, 'message' => 'Sales Invoice Update', 'invoiceText' => $newSale->invoiceText];
-        } catch (Exception $ex) {
-            $res = ['success' => false, 'message' => $ex->getMessage()];
-        }
-
-        echo json_encode($res);
-    }
-
     function sales_stock()
     {
         $data['title'] = "Sales Stock";

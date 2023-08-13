@@ -245,8 +245,8 @@ const salesInvoice = Vue.component("sales-invoice", {
 
         this.totaldueAmount = parseFloat((parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue) - (this.payments.reduce((acc, pre) => {return acc + +parseFloat(pre.CPayment_amount)},0) + +parseFloat(this.sales.SaleMaster_PaidAmount)) ).toFixed(2)
 
-        this.englishText = this.convertNumberToWords(parseFloat(parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue).toFixed(2));
-        await this.translate();
+        // this.englishText = this.convertNumberToWords(parseFloat(parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue).toFixed(2));
+        // await this.translate();
     },
     invoiceTextChange() {
       let data = {
@@ -308,16 +308,16 @@ const salesInvoice = Vue.component("sales-invoice", {
               `;
       document.head.appendChild(this.style);
     },
-    async translate() {
-      const response = await fetch(
-        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bn&dt=t&q=${encodeURIComponent(
-          this.englishText
-        )}`
-      );
-      const data = await response.json();
+    // async translate() {
+    //   const response = await fetch(
+    //     `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bn&dt=t&q=${encodeURIComponent(
+    //       this.englishText
+    //     )}`
+    //   );
+    //   const data = await response.json();
 
-      this.sales.invoiceText = data[0][0][0];
-    },
+    //   this.sales.invoiceText = data[0][0][0];
+    // },
     convertToBanglaNumber(number) {
       const englishNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
       const banglaNumbers = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];

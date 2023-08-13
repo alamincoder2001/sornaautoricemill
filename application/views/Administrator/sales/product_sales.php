@@ -644,6 +644,13 @@
                     return;
                 }
 
+                if (this.selectedCustomer != null && this.selectedCustomer.Customer_SlNo != '') {
+                    await axios.get('/get_sales_party_no_count/'+this.selectedCustomer.Customer_SlNo)
+                        .then(res => {     
+                            this.sales.party_no = res.data.length + 1
+                        })
+                }
+
                 await this.getCustomerDue();
 
                 this.calculateTotal();
@@ -687,7 +694,7 @@
                     productCode: this.selectedProduct.Product_Code,
                     categoryName: this.selectedProduct.ProductCategory_Name,
                     name: this.selectedProduct.Product_Name,
-                    salesRate: this.sales.salesRate == 'retail' ? this.selectedProduct.Product_SellingPrice:this.selectedProduct.Product_WholesaleRate,
+                    salesRate: this.sales.salesRate == 'retail' ? this.selectedProduct.Product_SellingPrice : this.selectedProduct.Product_WholesaleRate,
                     vat: this.selectedProduct.vat,
                     quantity: this.selectedProduct.quantity,
                     per_unit: this.selectedProduct.per_unit,
@@ -876,6 +883,10 @@
                     this.selectedEmployee = {
                         Employee_SlNo: sales.employee_id,
                         Employee_Name: sales.Employee_Name
+                    }
+                    this.selectedTruck = {
+                        Truck_SlNo: sales.truck_id,
+                        Truck_Name: sales.Truck_Name
                     }
 
                     this.selectedCustomer = {

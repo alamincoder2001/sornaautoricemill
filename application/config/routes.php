@@ -210,6 +210,7 @@ $route['get_damages'] = 'Administrator/Purchase/getDamages';
 $route['damageList'] = 'Administrator/Purchase/damage_product_list';
 $route['SelectDamageProduct'] = 'Administrator/Purchase/damage_select_product';
 
+$route['get_sales_party_no_count/(:any)'] = 'Administrator/Sales/PartyNoCount/$1';
 $route['sales/(:any)'] = 'Administrator/Sales/index/$1';
 $route['sales/(:any)/(:any)'] = 'Administrator/Sales/salesEdit/$1/$2';
 $route['salesinvoice'] = 'Administrator/Sales/sales_invoice';

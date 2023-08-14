@@ -16,15 +16,15 @@ const salesInvoice = Vue.component("sales-invoice", {
                       </div>
                   </div>
                   <div class="row">
-                      <div class="col-xs-7">
-                          <strong>কাস্টমার আইডি:</strong> {{ sales.Customer_Code }}<br>
-                          <strong>কাস্টমার নাম:</strong> {{ sales.Customer_Name }}<br>
-                          <strong>কাস্টমার ঠিকানা:</strong> {{ sales.Customer_Address }}<br>
-                          <strong>কাস্টমার মোবাইল:</strong> {{ convertToBanglaNumber(sales.Customer_Mobile) }} <br>
+                      <div class="col-xs-8">
+                          <strong style="font-size:14px;font-weight:bold;">নাম: {{ sales.Customer_Name }}</strong><br>
+                          <strong>ঠিকানা:</strong> {{ sales.Customer_Address }}<br>
+                          <strong>মোবাইল:</strong> {{ convertToBanglaNumber(sales.Customer_Mobile) }} <br>
                           <strong>ট্রাক নং.:</strong> {{ sales.Truck_Name }}<br>
                       </div>
-                      <div class="col-xs-5 text-right">
-                          <strong>সেলস বাই:</strong> {{ sales.AddBy }}<br>
+                      <div class="col-xs-4 text-left">
+                          <span id="addby"><strong>সেলস বাই:</strong> {{ sales.AddBy }}<br></span>
+                          <strong>কাস্টমার আইডি:</strong> {{ sales.Customer_Code }}<br>
                           <strong>ইনভয়েস নং.:</strong> {{ convertToBanglaNumber(sales.SaleMaster_InvoiceNo) }}<br>
                           <strong>সিরিয়াল নং.:</strong> {{ sales.serial_no }}<br>
                           <strong>চালান নং.:</strong> {{ sales.chalan_no }}<br>
@@ -246,7 +246,11 @@ const salesInvoice = Vue.component("sales-invoice", {
             +parseFloat(this.sales.SaleMaster_PaidAmount))
       ).toFixed(2);
 
-      await this.convertBan(parseFloat(parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue))
+      await this.convertBan(
+        parseFloat(
+          parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue
+        )
+      );
     },
     invoiceTextChange() {
       let data = {
@@ -258,27 +262,48 @@ const salesInvoice = Vue.component("sales-invoice", {
       });
     },
     async convertBan(num) {
-      var a1 = ['','এক ','দুই ','তিন ','চার ', 'পাঁচ ','ছয় ','সাত ','আট ','নয় ','দশ ',
-      'এগার ','বার ','তের ','চৌদ্দ ','পনের  ','ষোল ','সতের ','আঠার ','ঊনিশ ', 'বিশ ', 
-      'একুশ ','বাইশ ','তেইশ ','চব্বিশ ','পঁচিশ ','ছাব্বিশ ','সাতাশ ','আটাশ ','ঊনত্রিশ ', 'ত্রিশ ',
-      'একত্রিশ ','বত্রিশ ','তেত্রিশ ','চৌত্রিশ ','পঁয়ত্রিশ ','ছত্রিশ ','সাঁইত্রিশ ','আটত্রিশ ','ঊনচল্লিশ ', 'চল্লিশ ',
-      'একচল্লিশ ','বিয়াল্লিশ ','তেতাল্লিশ ','চুয়াল্লিশ ','পঁয়তাল্লিশ ','ছেচল্লিশ ','সাতচল্লিশ ','আটচল্লিশ ','ঊনপঞ্চাশ ', 'পঞ্চাশ ',
-      'একান্ন ','বায়ান্ন ','তিপ্পান্ন ','চুয়ান্ন ','পঞ্চান্ন ','ছাপ্পান্ন ','সাতান্ন ','আটান্ন ','ঊনষাট ', 'ষাট ',
-      'একষট্টি ','বাষট্টি ','তেষট্টি ','চৌষট্টি ','পঁয়ষট্টি ','ছেষট্টি ','সাতষট্টি ','আটষট্টি ','ঊনসত্তর ', 'সত্তর ',
-      'একাত্তর ','বাহাত্তর ','তিয়াত্তর ','চুয়াত্তর ','পঁচাত্তর ','ছিয়াত্তর ','সাতাত্তর ','আটাত্তর ','ঊনআশি ', 'আশি ',
-      'একাশি ','বিরাশি ','তিরাশি ','চুরাশি ','পঁচাশি ','ছিয়াশি ','সাতাশি ','আটাশি ','ঊননব্বই ', 'নব্বই ',
-      'একানব্বই ','বিরানব্বই ','তিরানব্বই ','চুরানব্বই ','পঁচানব্বই ','ছিয়ানব্বই ','সাতানব্বই ','আটানব্বই ','নিরানব্বই ',];
-      var b1 = ['', '', 'বিশ','ত্রিশ','চল্লিশ','পঞ্চাশ', 'ষাট','সত্তর','আশি','নব্বই'];
+      var a1 = ["", "এক ", "দুই ", "তিন ", "চার ", "পাঁচ ", "ছয় ", "সাত ", "আট ", "নয় ", "দশ ", "এগার ", "বার ", "তের ", "চৌদ্দ ", "পনের ", "ষোল ", "সতের ", "আঠার ", "ঊনিশ ", "বিশ ", "একুশ ", "বাইশ ", "তেইশ ", "চব্বিশ ", "পঁচিশ ", "ছাব্বিশ ", "সাতাশ ", "আটাশ ", "ঊনত্রিশ ", "ত্রিশ ", "একত্রিশ ", "বত্রিশ ", "তেত্রিশ ", "চৌত্রিশ ", "পঁয়ত্রিশ ", "ছত্রিশ ", "সাঁইত্রিশ ", "আটত্রিশ ", "ঊনচল্লিশ ", "চল্লিশ ", "একচল্লিশ ", "বিয়াল্লিশ ", "তেতাল্লিশ ", "চুয়াল্লিশ ", "পঁয়তাল্লিশ ", "ছেচল্লিশ ", "সাতচল্লিশ ", "আটচল্লিশ ", "ঊনপঞ্চাশ ", "পঞ্চাশ ", "একান্ন ", "বায়ান্ন ", "তিপ্পান্ন ", "চুয়ান্ন ", "পঞ্চান্ন ", "ছাপ্পান্ন ", "সাতান্ন ", "আটান্ন ", "ঊনষাট ", "ষাট ", "একষট্টি ", "বাষট্টি ", "তেষট্টি ", "চৌষট্টি ", "পঁয়ষট্টি ", "ছেষট্টি ", "সাতষট্টি ", "আটষট্টি ", "ঊনসত্তর ", "সত্তর ", "একাত্তর ", "বাহাত্তর ", "তিয়াত্তর ", "চুয়াত্তর ", "পঁচাত্তর ", "ছিয়াত্তর ", "সাতাত্তর ", "আটাত্তর ", "ঊনআশি ", "আশি ", "একাশি ", "বিরাশি ", "তিরাশি ", "চুরাশি ", "পঁচাশি ", "ছিয়াশি ", "সাতাশি ", "আটাশি ", "ঊননব্বই ", "নব্বই ", "একানব্বই ", "বিরানব্বই ", "তিরানব্বই ", "চুরানব্বই ", "পঁচানব্বই ", "ছিয়ানব্বই ", "সাতানব্বই ", "আটানব্বই ", "নিরানব্বই ",];
+      var b1 = [
+        "",
+        "",
+        "বিশ",
+        "ত্রিশ",
+        "চল্লিশ",
+        "পঞ্চাশ",
+        "ষাট",
+        "সত্তর",
+        "আশি",
+        "নব্বই",
+      ];
+      if ((num = num.toString()).length > 9) return "overflow";
+      n = ("000000000" + num)
+        .substr(-9)
+        .match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+      if (!n) return;
+      var str = "";
+      str +=
+        n[1] != 0
+          ? (a1[Number(n[1])] || b1[n[1][0]] + " " + a[n[1][1]]) + "কোটি "
+          : "";
+      str +=
+        n[2] != 0
+          ? (a1[Number(n[2])] || b1[n[2][0]] + " " + a[n[2][1]]) + "লাখ "
+          : "";
+      str +=
+        n[3] != 0
+          ? (a1[Number(n[3])] || b1[n[3][0]] + " " + a[n[3][1]]) + "হাজার "
+          : "";
+      str +=
+        n[4] != 0
+          ? (a1[Number(n[4])] || b1[n[4][0]] + " " + a[n[4][1]]) + "শত "
+          : "";
+      str +=
+        n[5] != 0
+          ? (str != "" ? " " : "") +
+            (a1[Number(n[5])] || b1[n[5][0]] + " " + a1[n[5][1]]) +
+            "টাকা মাত্র ।"
+          : "টাকা মাত্র ।";
 
-      if ((num = num.toString()).length > 9) return 'overflow';
-      n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-      if (!n) return; var str = '';
-      str += (n[1] != 0) ? (a1[Number(n[1])] || b1[n[1][0]] + ' ' + a[n[1][1]]) + 'কোটি ' : '';
-      str += (n[2] != 0) ? (a1[Number(n[2])] || b1[n[2][0]] + ' ' + a[n[2][1]]) + 'লাখ ' : '';
-      str += (n[3] != 0) ? (a1[Number(n[3])] || b1[n[3][0]] + ' ' + a[n[3][1]]) + 'হাজার ' : '';
-      str += (n[4] != 0) ? (a1[Number(n[4])] || b1[n[4][0]] + ' ' + a[n[4][1]]) + 'শত ' : '';
-      str += (n[5] != 0) ? ((str != '') ? ' ' : '') + (a1[Number(n[5])] || b1[n[5][0]] + ' ' + a1[n[5][1]]) + 'মাত্র ।' : 'মাত্র ।';
-      
       this.banglaText = str;
     },
     getCurrentBranch() {
@@ -385,6 +410,11 @@ const salesInvoice = Vue.component("sales-invoice", {
                                   body, table{
                                       font-size:11px;
                                   }
+                                  @media print{
+                                    #addby{
+                                        display: none;
+                                    }
+                                  }
                               </style>
                           </head>
                           <body>
@@ -402,7 +432,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                                       <thead>
                                           <tr>
                                               <td>
-                                                  <div style="height:120px;"></div>
+                                                  <div style="height:125px;"></div>
                                               <td>
                                           </tr>
                                       </thead>
@@ -454,6 +484,11 @@ const salesInvoice = Vue.component("sales-invoice", {
                               body, table{
                                   font-size: 13px;
                               }
+                              @media print{
+                                #addby{
+                                    display: none;
+                                }
+                              }
                           </style>
                       </head>
                       <body>
@@ -491,60 +526,49 @@ const salesInvoice = Vue.component("sales-invoice", {
                               body, table{
                                   font-size: 13px;
                               }
+                              @media print{
+                                #addby{
+                                    display: none;
+                                }
+                              }
                           </style>
                       </head>
                       <body>
-                          <div class="container">
-                              <table style="width:100%;">
-                                  <thead>
-                                      <tr>
-                                          <td>
-                                              <div class="row">
-                                                  <div class="col-xs-10 no-padding" style="padding-top:20px;text-align:center;">
-                                                      <strong style="font-size:18px;">${
-                                                        this.currentBranch
-                                                          .Company_Name
-                                                      }</strong><br>
-                                                      <p style="white-space:pre-line;">${
-                                                        this.currentBranch
-                                                          .Repot_Heading
-                                                      }</p>
-                                                  </div>
-                                                  <div class="col-xs-2 no-padding text-right">
-                                                    <img src="/uploads/company_profile_thum/${
-                                                      this.currentBranch
-                                                        .Company_Logo_org
-                                                    }" alt="Logo" style="height:90px;" />
-                                                  </div>
-                                              </div>
-                                              <div class="row">
-                                                  <div class="col-xs-12">
-                                                      <div style="border-bottom: 4px double #454545;margin-top:7px;margin-bottom:7px;"></div>
-                                                  </div>
-                                              </div>
-                                          </td>
-                                      </tr>
-                                  </thead>
-                                  <tbody>
-                                      <tr>
-                                          <td>
-                                              <div class="row">
-                                                  <div class="col-xs-12">
-                                                      ${invoiceContent}
-                                                  </div>
-                                              </div>
-                                          </td>
-                                      </tr>
-                                  </tbody>
-                                  <tfoot>
-                                      <tr>
-                                          <td>
-                                              <div style="width:100%;height:50px;">&nbsp;</div>
-                                          </td>
-                                      </tr>
-                                  </tfoot>
-                              </table>
-                              <div class="row" style="padding-top:35px;">
+                        <div class="container" style="position:relative;">
+                            <div class="row" style="position:absolute;top:0;left:0;width:100%;">
+                                <div class="col-xs-12">
+                                    <div style="text-align:center;">
+                                        <img src="/uploads/company_profile_thum/${this.currentBranch.Company_Logo_org}" alt="Logo" style="height:80px;margin:0px;" /><br>
+                                        <strong style="font-size:18px;">${this.currentBranch.Company_Name}</strong><br>
+                                        <p style="white-space:pre-line;">${this.currentBranch.Repot_Heading}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <table style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <td>
+                                            <div style="height:125px;"></div>
+                                        <td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            ${invoiceContent}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>
+                                            <div style="height:25px;"></div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                            <div class="row" style="position:fixed;bottom:0;left:0;width:100%;">
                                 <div class="col-xs-4">
                                     <span style="text-decoration:overline;">প্রস্তুতকারকের স্বাক্ষর</span>
                                 </div>
@@ -554,20 +578,8 @@ const salesInvoice = Vue.component("sales-invoice", {
                                 <div class="col-xs-4 text-right">
                                     <span style="text-decoration:overline;">মালিকের স্বাক্ষর</span>
                                 </div>
-                              </div>
-                              <div style="position:fixed;left:0;bottom:15px;width:100%;">
-                                  <div class="row" style="font-size:12px;">
-                                      <div class="col-xs-6">
-                                          Print Date: ${moment().format(
-                                            "DD-MM-YYYY h:mm a"
-                                          )}, Printed by: ${this.sales.AddBy}
-                                      </div>
-                                      <div class="col-xs-6 text-right">
-                                          Developed by: Link-Up Technologoy, Contact no: 01911978897
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
+                            </div>
+                        </div>
                           
                       </body>
                       </html>

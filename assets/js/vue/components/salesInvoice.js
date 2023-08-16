@@ -21,6 +21,7 @@ const salesInvoice = Vue.component("sales-invoice", {
                           <strong>ঠিকানা:</strong> {{ sales.Customer_Address }}<br>
                           <strong>মোবাইল:</strong> {{ convertToBanglaNumber(sales.Customer_Mobile) }} <br>
                           <strong>ট্রাক নং.:</strong> {{ sales.Truck_Name }}<br>
+                          <strong>তারিখ:</strong> {{ convertEnglishToBanglaDate(sales.SaleMaster_SaleDate) }} {{ sales.AddTime | formatDateTime('h:mm a') }}
                       </div>
                       <div class="col-xs-4 text-left">
                           <span id="addby"><strong>সেলস বাই:</strong> {{ sales.AddBy }}<br></span>
@@ -29,7 +30,6 @@ const salesInvoice = Vue.component("sales-invoice", {
                           <strong>সিরিয়াল নং.:</strong> {{ sales.serial_no }}<br>
                           <strong>চালান নং.:</strong> {{ sales.chalan_no }}<br>
                           <strong>পার্টি নং.:</strong> {{ sales.party_no }}<br>
-                          <strong>তারিখ:</strong> {{ convertEnglishToBanglaDate(sales.SaleMaster_SaleDate) }} {{ sales.AddTime | formatDateTime('h:mm a') }}
                       </div>
                   </div>
                   <div class="row">
@@ -248,7 +248,7 @@ const salesInvoice = Vue.component("sales-invoice", {
 
       await this.convertBan(
         parseFloat(
-          parseFloat(this.sales.SaleMaster_TotalSaleAmount) + +this.customerDue
+          this.totaldueAmount
         )
       );
     },

@@ -80,6 +80,8 @@ class Sales extends CI_Controller
             $data = json_decode($this->input->raw_input_stream);
 
             $invoice = $data->sales->invoiceNo;
+            $salesCount = $this->db->query("select * from tbl_salesmaster where SalseCustomer_IDNo = ? and SaleMaster_SaleDate = ?", [$data->sales->customerId, $data->sales->salesDate])->result();
+
             $invoiceCount = $this->db->query("select * from tbl_salesmaster where SaleMaster_InvoiceNo = ?", $invoice)->num_rows();
             if ($invoiceCount != 0) {
                 $invoice = $this->mt->generateSalesInvoice();
@@ -143,11 +145,12 @@ class Sales extends CI_Controller
                 'SaleMaster_DueAmount'           => $data->sales->due,
                 'SaleMaster_Previous_Due'        => $data->sales->previousDue,
                 'SaleMaster_Description'         => $data->sales->note,
+                'salesCount'                     => count($salesCount),
                 'Status'                         => 'a',
                 'is_service'                     => $data->sales->isService,
                 "AddBy"                          => $this->session->userdata("FullName"),
                 'AddTime'                        => date("Y-m-d H:i:s"),
-                'SaleMaster_branchid'            => $this->session->userdata("BRANCHid")
+                'SaleMaster_branchid'            => $this->session->userdata("BRANCHid"),
             );
 
             $this->db->insert('tbl_salesmaster', $sales);

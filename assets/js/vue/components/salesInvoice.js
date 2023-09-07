@@ -193,12 +193,16 @@ const salesInvoice = Vue.component("sales-invoice", {
           let salesdata = res.data;
 
           this.salescounts = res.data.sales.filter((sale) => {
-            return sale.SaleMaster_SaleDate == this.sales.SaleMaster_SaleDate
+            return sale.SaleMaster_SaleDate == this.sales.SaleMaster_SaleDate;
           });
 
-          let h = salesdata.sales.filter(
-            (sale) => sale.SaleMaster_SaleDate < this.sales.SaleMaster_SaleDate
-          );
+          let h = salesdata.sales.filter((sale) => {
+            return sale.SaleMaster_SaleDate < this.sales.SaleMaster_SaleDate;
+          });
+
+          h.sort(function (a, b) {
+            return new Date(b.SaleMaster_SaleDate) - new Date(a.SaleMaster_SaleDate);
+          });          
 
           if (h.length > 0) {
             this.dateFrom = h[0].SaleMaster_SaleDate;
@@ -245,13 +249,19 @@ const salesInvoice = Vue.component("sales-invoice", {
         .then((res) => {
           if (this.sales.salesCount > 0) {
             let dueFilter = this.salescounts.filter((sale) => {
-              return sale.salesCount < this.sales.salesCount
+              return sale.salesCount < this.sales.salesCount;
             });
-            let duePlus = dueFilter.reduce((acc, pre) => {return acc + parseFloat(pre.SaleMaster_DueAmount)}, 0);
-            let dueMinus = this.salescounts.reduce((acc, pre) => {return acc + parseFloat(pre.SaleMaster_DueAmount)}, 0);
+            let duePlus = dueFilter.reduce((acc, pre) => {
+              return acc + parseFloat(pre.SaleMaster_DueAmount);
+            }, 0);
+            let dueMinus = this.salescounts.reduce((acc, pre) => {
+              return acc + parseFloat(pre.SaleMaster_DueAmount);
+            }, 0);
 
-            this.customerDue = parseFloat((parseFloat(res.data[0].dueAmount) + +duePlus) - dueMinus).toFixed(2);
-          }else{
+            this.customerDue = parseFloat(
+              parseFloat(res.data[0].dueAmount) + +duePlus - dueMinus
+            ).toFixed(2);
+          } else {
             this.customerDue = res.data[0].dueAmount;
           }
         });

@@ -42,9 +42,10 @@
                         <table _a584de>
                             <thead>
                                 <tr>
-                                    <td>Sl.</td>
-                                    <td>Description</td>
-                                    <td>Qnty</td>
+                                    <td>ক্রমিক</td>
+                                    <td>বিবরণ</td>
+                                    <td>বস্তার সংখ্যা</td>
+                                    <td>বস্তার ওজন</td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -52,6 +53,7 @@
                                     <td>{{ sl + 1 }}</td>
                                     <td>{{ product.Product_Name }}</td>
                                     <td>{{ product.SaleDetails_TotalQuantity }} {{ product.Unit_Name }}</td>
+                                    <td>{{ product.SaleDetails_per_unit }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -192,7 +194,6 @@ new Vue({
             reportWindow.focus();
             await new Promise(resolve => setTimeout(resolve, 1000));
             reportWindow.print();
-            await new Promise(resolve => setTimeout(resolve, 1000));
             reportWindow.close();
         }
     }
